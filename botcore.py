@@ -67,7 +67,10 @@ class Bot:
         self.fetcher = MessageFetcher(self)
         self.fetcher.start()
         # initialize plugins
-        self.plugins = [c(self) for c in self.plugins_class]
+        self.plugins = []
+        for c in self.plugins_class:
+            logger.info("Loading %s" % c.PLUGIN_NAME)
+            self.plugins.append(c(self))
         self.plugin_runner = PluginRunner(self)
         self.plugin_runner.start()
 
@@ -97,7 +100,7 @@ class Bot:
         self.post("/release", {"qq": self.bot_qq})
 
 class Plugin:
-    PLUGIN_NAME = "Base Plugin"
+    PLUGIN_NAME = "Base"
     def __init__(self, bot):
         self.bot = bot  # run when loading plugins
         self.logger = logging.getLogger(self.PLUGIN_NAME)
