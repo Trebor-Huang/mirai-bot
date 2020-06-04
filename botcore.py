@@ -91,13 +91,18 @@ class Bot:
         return status
 
     def disconnect(self):
-        for p in self.plugins:
+        for p in self.plugins[::-1]:
+            logger.info("Shutting down %s" % p.PLUGIN_NAME)
             p.handle_disconnect()
+        logger.info("Shutting down plugin loader")
         self.plugin_runner.running = False
         self.plugin_runner.join()
+        logger.info("Shutting down message polling")
         self.fetcher.running = False
         self.fetcher.join()
+        logger.info("Releasing session")
         self.post("/release", {"qq": self.bot_qq})
+        logger.info("Disconnected")
 
 class Plugin:
     PLUGIN_NAME = "Base"
@@ -115,11 +120,11 @@ class Plugin:
 class ExamplePlugin(Plugin):
     PLUGIN_NAME = "Example"
     def __init__(self, bot):
-        logger.info("Starting Example Plugin")
+        self.logger.info("Starting Example Plugin")
 
     def handle_event(self, event):
-        logger.debug(event)
+        self.logger.info(event)
         return True
 
     def handle_disconnect(self):
-        logger.info("Example Plugin disconnecting")
+        self.logger.info("Example Plugin disconnecting")

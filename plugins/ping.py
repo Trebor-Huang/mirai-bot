@@ -1,4 +1,4 @@
-from utils import MessageResponseBasePlugin
+from utils import MessageResponseBasePlugin, plain
 
 class PingPlugin(MessageResponseBasePlugin):
     PLUGIN_NAME = "Ping"
@@ -6,14 +6,9 @@ class PingPlugin(MessageResponseBasePlugin):
     def handle_message(self, msgchain, sender, msgtype, event):
         for c in msgchain:
             if c["type"] == "At" and c["target"] == self.bot.bot_qq:
-                self.reply(event, msg=[
-                        {
-                            "type": "Plain",
-                            "text": "PONG"
-                        }
-                    ])
-                return True
-        return False
-
+                self.reply(event, msg=plain("PONG"))
+                return False
+        return True
 
 plugins = [(0, PingPlugin)]
+

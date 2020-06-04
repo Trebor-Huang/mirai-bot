@@ -1,5 +1,11 @@
 from botcore import Plugin, Bot
 
+def plain(txt):
+    return [{
+        "type" : "Plain",
+        "text" : txt
+      }]
+
 class MessageResponseBasePlugin(Plugin):
     PLUGIN_NAME = "Message-Response"
 
