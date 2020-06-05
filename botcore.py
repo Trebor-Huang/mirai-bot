@@ -120,6 +120,7 @@ class Plugin:
 class ExamplePlugin(Plugin):
     PLUGIN_NAME = "Example"
     def __init__(self, bot):
+        super().__init__(bot)
         self.logger.info("Starting Example Plugin")
 
     def handle_event(self, event):

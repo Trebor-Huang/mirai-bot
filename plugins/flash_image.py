@@ -6,6 +6,7 @@ class FlashImagePlugin(MessageResponseBasePlugin):
     def handle_message(self, msgchain, sender, msgtype, event):
         for c in msgchain:
             if c["type"] == "FlashImage":
+                self.logger.info("Flash image detected in %s by %s" % (msgtype, sender))
                 self.reply(event, msg=plain(c["url"]), quote=False, notify=True)
         return True
 

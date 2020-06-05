@@ -1,6 +1,6 @@
 import botcore, sys, pathlib, importlib, logging
 
-logging.basicConfig(format="%(asctime)s - %(levelname)s \t - %(name)s - %(message)s")
+logging.basicConfig(format="[%(levelname)s] %(name)s \t- %(message)s")
 
 plugins_path = pathlib.Path(__file__).parent.absolute().glob('plugins/*.py')
 plugins_modules = [importlib.import_module("plugins." + pp.stem) for pp in plugins_path]
