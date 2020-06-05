@@ -31,16 +31,20 @@ class PluginRunner(threading.Thread):
         self.bot = bot
         self.running = False
 
+    def process(self, event):
+        for p in self.bot.plugins:
+            if not p.handle_event(event):
+                break
+
     def run(self):
         try:
             self.running = True
             while self.running:
-                time.sleep(0.01)
                 if self.bot.event_queue:
                     e = self.bot.event_queue.pop(0)
-                    for p in self.bot.plugins:
-                        if not p.handle_event(e):
-                            break
+                    threading.Thread(target=self.process, args=(e,)).start()
+                else:
+                    time.sleep(0.01)
         except KeyboardInterrupt:
             pass
 

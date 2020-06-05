@@ -32,7 +32,7 @@ TODO
 
 ### Bot structure
 
-The bot has two threads to fetch events (every 0.5 seconds) and run plugins, respectively. Currently if a plugin hangs, the bot will stop processing events (and cannot properly shut down). The `post(api, data)` and `get(api, params)` method access the [APIs provided by mirai HTTP](https://github.com/mamoe/mirai-api-http), and handles session authorizing.
+The bot has two threads to fetch events (every 0.5 seconds) and run plugins, respectively. The `post(api, data)` and `get(api, params)` method access the [APIs provided by mirai HTTP](https://github.com/mamoe/mirai-api-http), and handles session authorizing.
 
 ## Plugins
 
@@ -42,7 +42,7 @@ The bot accepts plugins in the `./plugins` folder.
 
 A plugin file is a python source file containing a list `plugins` of tuples `(level, PluginClass)`, where `PluginClass` is a child class of `Plugin`. It should contain a class attribute `PLUGIN_NAME`, for logging purposes.
 
-The `handle_event(self, event)` and `handle_disconnect(self)` methods handle QQ events and clean up the plugin for disconnecting, respectively. Events are handled by each plugin, where plugins with higher `level` gets the event first. If `handle_event` returns `False`, the event is not handed down to the subsequent plugins.
+The `handle_event(self, event)` and `handle_disconnect(self)` methods handle QQ events and clean up the plugin for disconnecting, respectively. Events are handled by each plugin, where plugins with higher `level` gets the event first. If `handle_event` returns `False`, the event is not handed down to the subsequent plugins. This means that if a plugin hangs, subsequent plugins cannot handle that event.
 
 You can use `self.bot` to access the `Bot` object, and `self.logger` to access the logger.
 
