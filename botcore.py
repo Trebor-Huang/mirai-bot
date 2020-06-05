@@ -49,7 +49,9 @@ class Bot:
     def __init__(self, bot_qq, api_url="http://localhost:8080", auth_key="", plugins=None):
         logger.info("Checking for mirai server...")
         mirai_status = requests.get(api_url + "/about")
-        logger.info(mirai_status.text)
+        if mirai_status["code"] != 0:
+            raise RuntimeError(mirai_status)
+        logger.info("Mirai HTTP version: %s" % mirai_status["data"]["version"])
         self.auth_key = auth_key
         self.api_url = api_url
         self.plugins_class = [] if plugins is None else plugins
@@ -91,13 +93,13 @@ class Bot:
         return status
 
     def disconnect(self):
-        for p in self.plugins[::-1]:
-            logger.info("Shutting down %s" % p.PLUGIN_NAME)
+        for p in self.plugins:
+            logger.info("Disconnecting %s" % p.PLUGIN_NAME)
             p.handle_disconnect()
-        logger.info("Shutting down plugin loader")
+        logger.info("Shutting down plugin driver")
         self.plugin_runner.running = False
         self.plugin_runner.join()
-        logger.info("Shutting down message polling")
+        logger.info("Stopping event polling loop")
         self.fetcher.running = False
         self.fetcher.join()
         logger.info("Releasing session")
