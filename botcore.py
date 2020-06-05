@@ -52,7 +52,7 @@ class PluginRunner(threading.Thread):
 class Bot:
     def __init__(self, bot_qq, api_url="http://localhost:8080", auth_key="", plugins=None):
         logger.info("Checking for mirai server...")
-        mirai_status = requests.get(api_url + "/about")
+        mirai_status = requests.get(api_url + "/about").json()
         if mirai_status["code"] != 0:
             raise RuntimeError(mirai_status)
         logger.info("Mirai HTTP version: %s" % mirai_status["data"]["version"])
