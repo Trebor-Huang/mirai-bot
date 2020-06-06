@@ -10,9 +10,10 @@ def get_source(source, usepackage=(), definitions=""):
 
 def compile_latex(src):
     u = hashlib.sha256(src.encode('utf-8')).hexdigest()
-    if not os.path.isfile("./resources/%s.jpeg" % u):
+    if not os.path.isfile("../plugins/MiraiAPIHTTP/images/%s.jpeg" % u):
         with open("./resources/latex/%s.tex" % u, "w") as f:
             f.write(src)
+        # TODO write up explanations
         compile_return = os.system('bash -c "ulimit -t 30 ; ( docker run -m 1GB -v $(pwd)/resources/latex/%s.tex:/home/latex/texput.tex --name latex_container%s treborhuang/latex > /dev/null ) 2> >(grep -v \'Your kernel does not support swap limit capabilities\' >&2)"' % (u, u))
         if compile_return == 137:  # timed out
             return ("Timeout", (), "")
@@ -52,8 +53,9 @@ class LaTeXifyPlugin(plugin.CommandPlugin):
                 defs, src = src.split("\\end{bot-defs}")
         except Exception as e:
             self.reply(event, utils.plain("格式不正确"))
+            return
         if ismath:
-            src = "\\( \\displaystyle " + src + "\\)"
+            src = "$ \\displaystyle " + src + "$"
         src_ltx = get_source(src, pkgs, defs)
         r, rets, l = compile_latex(src_ltx)
         self.logger.info("Task %s %s: " % (task_ns, r) + str(rets))
