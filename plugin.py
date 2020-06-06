@@ -105,7 +105,7 @@ class CommandPlugin(MessageResponseBasePlugin):
             if c["type"] == "Plain":
                 for cmd in self.COMMAND_NAME:
                     if c["text"].lower().startswith(COMMAND_PREFIX + cmd):
-                        self.handle_command(c, c["text"][len(COMMAND_PREFIX + cmd):], sender, msgtype, event)
+                        self.handle_command(cmd, c["text"][len(COMMAND_PREFIX + cmd):], sender, msgtype, event)
                         return False
                 return True
         return True

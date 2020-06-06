@@ -55,7 +55,7 @@ class LaTeXifyPlugin(plugin.CommandPlugin):
             self.reply(event, utils.plain("格式不正确"))
             return
         if ismath:
-            src = "$ \\displaystyle " + src + "$"
+            src = "\\( \\displaystyle " + src + "\\)"
         src_ltx = get_source(src, pkgs, defs)
         r, rets, l = compile_latex(src_ltx)
         self.logger.info("Task %s %s: " % (task_ns, r) + str(rets))
