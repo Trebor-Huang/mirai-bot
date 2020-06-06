@@ -1,4 +1,4 @@
-import os, hashlib, utils, plugins
+import os, hashlib, utils, plugin
 
 def get_preamble(usepackage=(), definitions=""):
     usepackage += ("amssymb", "amsmath", "amsfonts")
@@ -33,7 +33,7 @@ def compile_latex(src):
         return ("Cached", (), u + ".jpeg")
     return ("Done", (compile_return, copy_return, convert_return, resize_return), u + ".jpeg")
 
-class LaTeXifyPlugin(plugins.CommandPlugin):
+class LaTeXifyPlugin(plugin.CommandPlugin):
     PLUGIN_NAME = "LaTeXify"
     COMMAND_NAME = ["render", "latex"]
 

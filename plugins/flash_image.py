@@ -1,4 +1,5 @@
-from utils import MessageResponseBasePlugin, plain
+from utils import plain
+from plugin import MessageResponseBasePlugin
 
 class FlashImagePlugin(MessageResponseBasePlugin):
     PLUGIN_NAME = "Flash"
