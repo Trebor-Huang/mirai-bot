@@ -1,4 +1,4 @@
-import os, hashlib, utils, plugin
+import os, hashlib, utils, plugin, time
 
 def get_preamble(usepackage=(), definitions=""):
     usepackage += ("amssymb", "amsmath", "amsfonts")
@@ -34,23 +34,29 @@ def compile_latex(src):
     return ("Done", (compile_return, copy_return, convert_return, resize_return), u + ".jpeg")
 
 class LaTeXifyPlugin(plugin.CommandPlugin):
-    PLUGIN_NAME = "LaTeXify"
+    PLUGIN_NAME = "LaTeX"
     COMMAND_NAME = ["render", "latex"]
 
     def render(self, src, ismath, event):
+        task_ns = hex(hash(time.time()))[8:]
+        self.logger.info("Received LaTeX task @ %s" % task_ns)
         pkgs = ()
         defs = ""
-        if src[:22] == "\\begin{bot-usepackage}":
-            src = src[22:]
-            pkg, src = src.split("\\end{bot-usepackage}")
-            pkgs = tuple(pkg.split())
-        if src[:16] == "\\begin{bot-defs}":
-            src = src[16:]
-            defs, src = src.split("\\end{bot-defs}")
+        try:
+            if src[:22] == "\\begin{bot-usepackage}":
+                src = src[22:]
+                pkg, src = src.split("\\end{bot-usepackage}")
+                pkgs = tuple(pkg.split())
+            if src[:16] == "\\begin{bot-defs}":
+                src = src[16:]
+                defs, src = src.split("\\end{bot-defs}")
+        except Exception as e:
+            self.reply(event, utils.plain("格式不正确"))
         if ismath:
             src = "\\( \\displaystyle " + src + "\\)"
         src_ltx = get_source(src, pkgs, defs)
         r, rets, l = compile_latex(src_ltx)
+        self.logger.info("Task %s %s: " % (task_ns, r) + str(rets))
         try:
             if r == "Timeout":
                 self.reply(event, utils.plain("TLE~qwq"))
@@ -62,8 +68,8 @@ class LaTeXifyPlugin(plugin.CommandPlugin):
             elif r in ["Done", "Cached"]:
                 self.reply(event, [{"type": "Image", "path": l}])
         except Exception as e:
+            self.logger.exception(e)
             self.reply(event, "似乎你（或者群主设置）不允许群内陌生人私聊，或者网络错误："+str(e)+"请将错误代码和发生的时间告诉我的主人", quote=False, notify=True)
-        return r, rets
 
     def handle_command(self, cmd, text, sender, msgtype, event):
         self.render(text, cmd=="latex", event)
