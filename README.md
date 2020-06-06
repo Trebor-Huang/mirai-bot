@@ -17,6 +17,7 @@ The code of my qq bot!
 Currently it has the ability to:
 - recover the link to flash images (this is offensive, it will be turned off by default when I finished debugging it).
 - answer pings.
+- render LaTeX formulae and text.
 
 ## Requirements
 

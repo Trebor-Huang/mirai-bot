@@ -13,7 +13,7 @@ def compile_latex(src):
     if not os.path.isfile("./resources/%s.jpeg" % u):
         with open("./resources/latex/%s.tex" % u, "w") as f:
             f.write(src)
-        compile_return = os.system('bash -c "ulimit -t 30 ; docker run -m 1GB -v $(pwd)/resources/latex/%s.tex:/home/latex/texput.tex --name latex_container%s treborhuang/latex > /dev/null"' % (u, u))
+        compile_return = os.system('bash -c "ulimit -t 30 ; ( docker run -m 1GB -v $(pwd)/resources/latex/%s.tex:/home/latex/texput.tex --name latex_container%s treborhuang/latex > /dev/null ) 2> >(grep -v \'Your kernel does not support swap limit capabilities\' >&2)"' % (u, u))
         if compile_return == 137:  # timed out
             return ("Timeout", (), "")
         copy_return = os.system("docker cp latex_container%s:/home/latex/ ./resources/latex/%s/" % (u, u))
@@ -67,6 +67,8 @@ class LaTeXifyPlugin(plugin.CommandPlugin):
 
     def handle_command(self, cmd, text, sender, msgtype, event):
         self.render(text, cmd=="latex", event)
+
+plugins = [(1000, LaTeXifyPlugin)]
 
 if __name__ == "__main__":
     src_test = get_source("$ a^2 + b^2 $")
