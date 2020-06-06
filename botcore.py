@@ -33,8 +33,11 @@ class PluginRunner(threading.Thread):
 
     def process(self, event):
         for p in self.bot.plugins:
-            if not p.handle_event(event):
-                break
+            try:
+                if not p.handle_event(event):
+                    break
+            except Exception as e:
+                p.logger.exception(e)
 
     def run(self):
         try:
@@ -122,16 +125,3 @@ class Plugin:
 
     def handle_disconnect(self):
         return
-
-class ExamplePlugin(Plugin):
-    PLUGIN_NAME = "Example"
-    def __init__(self, bot):
-        super().__init__(bot)
-        self.logger.info("Starting Example Plugin")
-
-    def handle_event(self, event):
-        self.logger.info(event)
-        return True
-
-    def handle_disconnect(self):
-        self.logger.info("Example Plugin disconnecting")

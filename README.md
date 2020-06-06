@@ -11,6 +11,8 @@ The code of my qq bot!
   - [Plugins](#plugins)
     - [Plugin Basics](#plugin-basics)
     - [The Message-Response Plugin Framework](#the-message-response-plugin-framework)
+    - [The Command Framework](#the-command-framework)
+  - [TODO](#todo)
 
 Currently it has the ability to:
 - recover the link to flash images (this is offensive, it will be turned off by default when I finished debugging it).
@@ -48,7 +50,7 @@ You can use `self.bot` to access the `Bot` object, and `self.logger` to access t
 
 ### The Message-Response Plugin Framework
 
-To more effectively develop plugins, you can inherit from the `utils.MessageResponseBasePlugin` class. Then you can handle messages (from friends, groups or temporary messages) by reimplementing the `handle_message(self, msgchain, sender, msgtype, event)` function. Other events can be processed with `handle_EventType(self, event)` methods, where the types of the event are listed [here](https://github.com/mamoe/mirai-api-http/blob/master/EventType.md).
+To more effectively develop plugins, you can inherit from the `plugins.MessageResponseBasePlugin` class. Then you can handle messages (from friends, groups or temporary messages) by reimplementing the `handle_message(self, msgchain, sender, msgtype, event)` function. Other events can be processed with `handle_EventType(self, event)` methods, where the types of the event are listed [here](https://github.com/mamoe/mirai-api-http/blob/master/EventType.md).
 
 You can invoke `self.reply(event, msg=None, quote=True, notify=False, private=False, ban_duration=0, revoke=False)` to more effectively reply to messages (currently non-message events are ignored by this method).
 - If `msg` is not `None`, the bot replies to the message referred by `event` with the message chain `msg`. And you can quote or "at" (i.e. notify with the `@` construct in QQ) the sender by setting the corresponding flags; these flags are ignored if they are not available. You may also send private messages (as opposed to group messages, e.g. to avoid cluttering) by setting the `private` flag.
@@ -56,3 +58,11 @@ You can invoke `self.reply(event, msg=None, quote=True, notify=False, private=Fa
 - If `revoke` is set to `True`, the message `event` is revoked if possible. If the bot has no priviledge to do this it raises a `RuntimeError`.
 
 `self.get_xxx` and `self.post_xxx` (with keyword arguments) sends the corresponding requests to the HTTP API, listed [here](https://github.com/mamoe/mirai-api-http).
+
+### The Command Framework
+
+An even more restricted senario is when the bot needs to respond to _commands_, e.g. messages beginning with `> CMD`, or similar stuff. To use the framework, inherit from `plugins.CommandPlugin`, and override `COMMAND_NAME` with a list of commands that the plugin processes. Then implement `handle_command(self, cmd, text, sender, msgtype, event)`. Remember to set the global `plugins.COMMAND_PREFIX` if you want other prefixes (`""` if you don't want it, but you need to be careful with doing that).
+
+## TODO
+
+ - [ ] Make message chain management more convenient.

@@ -1,4 +1,5 @@
-from utils import MessageResponseBasePlugin, plain
+from utils import plain
+from plugins import MessageResponseBasePlugin
 
 class PingPlugin(MessageResponseBasePlugin):
     PLUGIN_NAME = "Ping"
