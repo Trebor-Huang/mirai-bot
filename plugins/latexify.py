@@ -37,9 +37,24 @@ def compile_latex(src):
 class LaTeXifyPlugin(plugin.CommandPlugin):
     PLUGIN_NAME = "LaTeX"
     COMMAND_NAME = ["render", "latex"]
+    HELP_MESSAGE = "渲染LaTeX公式或文字。"
+    USAGE = [
+        (plugin.COMMAND_PREFIX + COMMAND_NAME[0] + " \\LaTeX 文字",
+        (
+            "渲染LaTeX段落。\n"
+            r"注意公式和数学符号需要用 $..$ 或者 \(..\)扩起。如果需要行间公式请用\displaystyle。"
+            r"如果需要添加宏包或者在前序中添加命令，请使用\begin{bot-usepackage}宏包1 宏包2 宏包3\end{bot-usepackage}"
+            r"和\begin{bot-defs}命令\end{bot-defs}。注意这两者必须按顺序添加在头部，可以省略其中一到两个。"
+        )),
+        (plugin.COMMAND_PREFIX + COMMAND_NAME[1] + " \\LaTeX 公式",
+        (
+            "渲染LaTeX公式。\n"
+            "其他同上。"
+        ))
+    ]
 
     def render(self, src, ismath, event):
-        task_ns = hex(hash(time.time()))[8:]
+        task_ns = hex(hash(time.time()))[:8]
         self.logger.info("Received LaTeX task @ %s" % task_ns)
         pkgs = ()
         defs = ""
@@ -74,7 +89,7 @@ class LaTeXifyPlugin(plugin.CommandPlugin):
             self.reply(event, "似乎你（或者群主设置）不允许群内陌生人私聊，或者网络错误："+str(e)+"请将错误代码和发生的时间告诉我的主人", quote=False, notify=True)
 
     def handle_command(self, cmd, text, sender, msgtype, event):
-        self.render(text, cmd=="latex", event)
+        self.render(text, cmd==self.COMMAND_NAME[1], event)
 
 plugins = [(1000, LaTeXifyPlugin)]
 

@@ -3,6 +3,7 @@ from plugin import MessageResponseBasePlugin
 
 class PingPlugin(MessageResponseBasePlugin):
     PLUGIN_NAME = "Ping"
+    HELP_MESSAGE = "在任何群聊中@bot。如果bot处于开机状态，则会回复PONG。"
 
     def handle_message(self, msgchain, sender, msgtype, event):
         for c in msgchain:
