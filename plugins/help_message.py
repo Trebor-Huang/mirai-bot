@@ -39,7 +39,7 @@ class HelpPlugin(plugin.CommandPlugin):
                             if l != "":
                                 hm += "      " + l + "\n"
                         hm += "\n"
-                self.reply(event, hm.strip(), quote=False, private=True)
-        self.reply(event, "帮助已发送至私聊。")
+                self.reply(event, utils.plain(hm.strip()), quote=False, private=True)
+        self.reply(event, utils.plain("帮助已发送至私聊。"))
 
 plugins = [(1000, HelpPlugin)]
