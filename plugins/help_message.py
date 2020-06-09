@@ -26,6 +26,8 @@ class HelpPlugin(plugin.CommandPlugin):
 
     def handle_command(self, cmd, text, sender, msgtype, event):
         for p in self.bot.plugins:
+            if p.ADMIN and sender["id"] not in self.bot.admins:
+                continue
             hm = ""
             if hasattr(p, "HELP_MESSAGE"):
                 hm += p.PLUGIN_NAME + "\n"

@@ -1,4 +1,5 @@
 from botcore import Plugin, Bot
+from utils import plain
 
 class ExamplePlugin(Plugin):
     PLUGIN_NAME = "Example"
@@ -32,6 +33,8 @@ class MessageResponseBasePlugin(Plugin):
             return getattr(self, 'handle_' + event["type"], lambda _:True)(event)
 
     def reply(self, event, msg=None, quote=True, notify=False, private=False, ban_duration=0, revoke=False):
+        if isinstance(msg, str):
+            msg = plain(msg)
         if event["type"] == "GroupMessage" and not private:
             if msg is not None:
                 if notify:

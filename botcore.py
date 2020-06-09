@@ -53,7 +53,7 @@ class PluginRunner(threading.Thread):
 
 
 class Bot:
-    def __init__(self, bot_qq, api_url="http://localhost:8080", auth_key="", plugins=None):
+    def __init__(self, bot_qq, api_url="http://localhost:8080", auth_key="", plugins=None, admins=None):
         logger.info("Checking for mirai server...")
         mirai_status = requests.get(api_url + "/about").json()
         if mirai_status["code"] != 0:
@@ -63,6 +63,8 @@ class Bot:
         self.api_url = api_url
         self.plugins_class = [] if plugins is None else plugins
         self.bot_qq = bot_qq
+        self.admins = list(admins) if admins is not None else []
+        logger.info("Bot running on QQ %s, with admins %s" % (bot_qq, self.admins))
 
     def connect(self):
         auth_status = requests.post(self.api_url + "/auth", data=json.dumps({"authKey": self.auth_key})).json()
@@ -115,6 +117,7 @@ class Bot:
 
 class Plugin:
     PLUGIN_NAME = "Base"
+    ADMIN = False
     def __init__(self, bot):
         self.bot = bot  # run when loading plugins
         self.logger = logging.getLogger(self.PLUGIN_NAME)
