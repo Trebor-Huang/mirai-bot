@@ -32,9 +32,9 @@ class HelpPlugin(plugin.CommandPlugin):
                 for l in p.HELP_MESSAGE.split("\n"):
                     hm += "    " + l + "\n"
                 if hasattr(p, "USAGE"):
-                    hm += "\n    使用示例："
+                    hm += "\n    使用示例：\n"
                     for usage, explanation in p.USAGE:
-                        hm += "      " + usage
+                        hm += "      " + usage + "\n"
                         for l in explanation.split("\n"):
                             if l != "":
                                 hm += "      " + l + "\n"
