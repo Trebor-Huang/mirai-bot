@@ -25,7 +25,11 @@ You need Python 3.5+ to run the bot. (Older versions may be able to run the bot,
 
 ## Usage
 
-Set up a Mirai server as instructed [here](https://github.com/mamoe/mirai), possibly with the [wrapper](https://github.com/mamoe/mirai-console-wrapper). And install the [HTTP API plugin](https://github.com/mamoe/mirai-api-http). Remember to modify the auth key of the HTTP API plugin. Start the bot by `python3 ./bot.py <YOUR-BOT-QQ> <YOUR-HTTP-API-AUTH-KEY>`. Stop it by entering `stop`.
+Set up a Mirai server as instructed [here](https://github.com/mamoe/mirai), possibly with the [wrapper](https://github.com/mamoe/mirai-console-wrapper). And install the [HTTP API plugin](https://github.com/mamoe/mirai-api-http). Remember to modify the auth key of the HTTP API plugin.
+
+To make `LaTeXify` work, you need to create a folder `./resources/latex`, since it does not do so itself. You need to build the Dockerfile in `./dockerfiles/LaTeXify/`
+
+Start the bot by `python3 ./bot.py <YOUR-BOT-QQ> <YOUR-HTTP-API-AUTH-KEY>`. Stop it by entering `stop`.
 
 ## How it works
 
