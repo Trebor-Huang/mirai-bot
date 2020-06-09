@@ -26,8 +26,8 @@ def compile_latex(src):
             if error_log:
                 return ("Failed", (compile_return, copy_return), error_log.strip())
             return ("Failed-NoError", (compile_return, copy_return), logs)
-        convert_return = os.system("convert -density 500 ./resources/latex/%s/texput.pdf ./resources/latex/%s.jpeg" % (u, u))
-        resize_return = os.system("convert ./resources/latex/%s.jpeg -resample 400 ../plugins/MiraiAPIHTTP/images/%s.jpeg" % (u, u))
+        convert_return = os.system("convert -density 700 ./resources/latex/%s/texput.pdf ./resources/latex/%s.jpeg" % (u, u))
+        resize_return = os.system("convert ./resources/latex/%s.jpeg -resample 500 ../plugins/MiraiAPIHTTP/images/%s.jpeg" % (u, u))
         if convert_return or resize_return:
             return ("Failed", (compile_return, copy_return, convert_return, resize_return), "请告诉我的主人：" + str(((compile_return, copy_return, convert_return, resize_return))))
     else:
