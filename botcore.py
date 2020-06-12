@@ -97,7 +97,7 @@ class Bot:
         d = {i : params[i] for i in params}
         d["sessionKey"] = self.session
         status = requests.get(self.api_url + api, params=d).json()
-        if status["code"] != 0:
+        if isinstance(status, dict) and "code" in status and status["code"] != 0:
             raise RuntimeError(status)
         return status
 

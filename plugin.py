@@ -35,6 +35,9 @@ class MessageResponseBasePlugin(Plugin):
     def reply(self, event, msg=None, quote=True, notify=False, private=False, ban_duration=0, revoke=False):
         if isinstance(msg, str):
             msg = plain(msg)
+        if private:
+            friends = self.get_friendList()
+            pri_friend = any(f["id"] == event["sender"]["id"] for f in friends)
         if event["type"] == "GroupMessage" and not private:
             if msg is not None:
                 if notify:
@@ -57,7 +60,7 @@ class MessageResponseBasePlugin(Plugin):
                 self.post_mute(target=event["sender"]["group"]["id"], memberId=event["sender"]["id"], time=ban_duration)
             if revoke:
                 self.post_recall(target=event["messageChain"][0]["id"])
-        elif event["type"] == "FriendMessage":
+        elif event["type"] == "FriendMessage" or (private and pri_friend):
             if msg is not None:
                 if quote:
                     self.post_sendFriendMessage(
@@ -68,7 +71,7 @@ class MessageResponseBasePlugin(Plugin):
                     self.post_sendFriendMessage(
                       target=event["sender"]["id"],
                       messageChain=msg)
-        elif event["type"] == "TempMessage" or private:
+        elif event["type"] == "TempMessage" or (private and not pri_friend):
             if msg is not None:
                 if quote:
                     self.post_sendTempMessage(
@@ -85,11 +88,11 @@ class MessageResponseBasePlugin(Plugin):
     def __getattr__(self, attr):
         if attr[:4] == "get_":
             def getf(**kwargs):
-                self.bot.get("/" + attr[4:], kwargs)
+                return self.bot.get("/" + attr[4:], kwargs)
             return getf
         elif attr[:5] == "post_":
             def postf(**kwargs):
-                self.bot.post("/" + attr[5:], kwargs)
+                return self.bot.post("/" + attr[5:], kwargs)
             return postf
         else:
             raise AttributeError(attr)
