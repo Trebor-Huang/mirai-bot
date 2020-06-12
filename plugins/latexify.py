@@ -59,10 +59,12 @@ class LaTeXifyPlugin(plugin.CommandPlugin):
         pkgs = ()
         defs = ""
         try:
+            src = src.strip()
             if src[:22] == "\\begin{bot-usepackage}":
                 src = src[22:]
                 pkg, src = src.split("\\end{bot-usepackage}")
                 pkgs = tuple(pkg.split())
+                src = src.strip()
             if src[:16] == "\\begin{bot-defs}":
                 src = src[16:]
                 defs, src = src.split("\\end{bot-defs}")
@@ -79,14 +81,14 @@ class LaTeXifyPlugin(plugin.CommandPlugin):
                 self.reply(event, utils.plain("TLE~qwq"))
             elif r == "Failed":
                 self.reply(event, utils.plain("出错了qaq"))
-                self.reply(event, utils.plain(utils.clamp(l, 5000)), private=True)
+                self.reply(event, utils.plain(utils.clamp(l, 500)))
             elif r == "Failed-NoError":
                 self.reply(event, "出错了qaq，而且很不寻常，跟我主人说吧qwq")
             elif r in ["Done", "Cached"]:
                 self.reply(event, [{"type": "Image", "path": l}])
         except Exception as e:
             self.logger.exception(e)
-            self.reply(event, "似乎你（或者群主设置）不允许群内陌生人私聊，或者网络错误："+str(e)+"请将错误代码和发生的时间告诉我的主人", quote=False, notify=True)
+            self.reply(event, "似乎你（或者群主设置）不允许群内陌生人私聊，或者网络错误：\n"+str(e)+"\n请将错误代码和发生的时间告诉我的主人", quote=False, notify=True)
 
     def handle_command(self, cmd, text, sender, msgtype, event):
         self.render(text, cmd==self.COMMAND_NAME[1], event)
